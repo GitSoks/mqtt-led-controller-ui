@@ -65,15 +65,19 @@ def send_color(led_index, color):
 
 # Create UI elements for controlling LEDs
 led_buttons = []
-for i in range(12):
-    with ui.button(icon="colorize") as button:
-        color = ui.color_picker(
-            on_pick=lambda e, led_index=i: (
-                button.style(f"background-color:{e.color}!important"),
-                send_color(led_index, e.color),
+with ui.grid(rows=6, columns=6):
+    for i in range(12):
+        button_name = "button" + str(i)
+        with ui.button(icon="colorize") as button:
+            button.name = button_name
+            color = ui.color_picker(
+                on_pick=lambda e, led_index=i, button=button: (
+                    button.style(f"background-color:{e.color}!important"),
+                    send_color(led_index, e.color),
+                )
             )
-        )
-        led_buttons.append(button)
+            led_buttons.append(button_name)
+        ui.label(text=str(i))
 
 # Run the program in window mode
 ui.run(dark=None, title="MQTT LED Controller", reload=True, native=True)
