@@ -1,7 +1,7 @@
 import paho.mqtt.client as mqtt
 
 # Define MQTT broker settings
-broker_address = "192.168.1.10"
+broker_address = "localhost"
 broker_port = 1883
 broker_username = "ui"
 broker_password = "password"
@@ -52,16 +52,9 @@ client.loop_start()
 # Publish messages
 client.publish(topic1, "Hello, topic1!")
 
-with ui.button(icon="colorize") as button:
-    ui.color_picker(
-        on_pick=lambda e: button.style(f"background-color:{e.color}!important")
-    )
 
-
-ui.run()
-# Keep the program running
-# while True:
-#    pass
+while True:
+    pass
 
 
 # Disconnect from MQTT broker

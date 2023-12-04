@@ -1,0 +1,46 @@
+services:
+  mosquitto_mqtt_broker:
+    image: eclipse-mosquitto:2
+#    build:
+#      context: .
+    volumes:
+      - type: bind
+        source: ./config/
+        target: /mosquitto/config/
+      - type: bind
+        source: ./log/
+        target: /mosquitto/log/
+      - type: volume
+        source: data
+        target: /mosquitto/data/
+    expose:
+      - 1883
+    restart: unless-stopped
+    network_mode: bridge
+    ports:
+      - target: 1883
+        published: 1883
+        protocol: tcp
+        mode: host
+      - target: 9001
+        published: 9001
+        protocol: tcp
+        mode: host
+
+  led_controller_ui:
+    build:
+      context: .  
+    #image: zauberzeug/nicegui:latest
+    #restart: always
+    network_mode: host
+    ports:
+      - 80:8080
+    environment:
+      - PUID=1000 # change this to your user id
+      - PGID=1000 # change this to your group id
+    volumes:
+      - ./:/app/
+
+volumes:
+  data:
+    name: "mqtt-broker-data"

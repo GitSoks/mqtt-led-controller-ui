@@ -3,7 +3,7 @@ from nicegui import ui
 import json
 
 # Define MQTT broker settings
-broker_address = "192.168.1.10"
+broker_address = "172.17.0.1"
 broker_port = 1883
 broker_username = "ui"
 broker_password = "password"
@@ -80,7 +80,7 @@ with ui.grid(rows=6, columns=6):
         ui.label(text=str(i))
 
 # Run the program in window mode
-ui.run(dark=None, title="MQTT LED Controller", reload=True, native=True)
+ui.run(dark=None, title="MQTT LED Controller", reload=True, native=False)
 
 # Disconnect from MQTT broker
 # client.loop_stop()
