@@ -40,6 +40,8 @@ services:
       - PGID=1000 # change this to your group id
     volumes:
       - ./:/app/
+    depends_on:
+        - mosquitto_mqtt_broker
 
 volumes:
   data:
