@@ -11,9 +11,31 @@ broker_password = "password"
 
 # Define MQTT topics
 topics = ["test/leds/command/" + str(i) for i in range(12)]
+topic_state = "test/leds/state"
 
 # Create MQTT client instance
 client = mqtt.Client()
+
+
+def parse_json_message(json_message):
+    led_colors = {}
+    try:
+        data = json.loads(json_message)
+        for led_index, color_data in data.items():
+            red = color_data.get("red", 0)
+            green = color_data.get("green", 0)
+            blue = color_data.get("blue", 0)
+            color_hex = "#{:02x}{:02x}{:02x}".format(red, green, blue)
+            led_colors[int(led_index)] = color_hex
+    except json.JSONDecodeError:
+        print("Invalid JSON message")
+        
+    return led_colors
+
+
+def set_led_button_color(led_colors):
+    for i, e in enumerate(led_colors.values()):
+        ui.led_buttons[i].style(f"color:{led_colors[i]}!important"),
 
 
 def send_color(led_index, color):
@@ -32,8 +54,7 @@ def send_color(led_index, color):
 def on_connect(client, userdata, flags, rc):
     print("Connected to MQTT broker with result code " + str(rc))
     # Subscribe to topics upon successful connection
-    for topic in topics:
-        client.subscribe(topic)
+    client.subscribe(topic_state)
     # Update UI with connection status
     ui.status_label.text = "Connected to MQTT broker " + broker_address
     ui.connect_button.text = "Disconnect"  # Change connect button text to "Disconnect"
@@ -47,7 +68,7 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     print("Received message: " + msg.topic + " " + str(msg.payload))
-    ui.notify("Received message: " + msg.topic + " " + str(msg.payload))
+    print(parse_json_message(msg.payload))
 
 
 def on_publish(client, userdata, mid):
@@ -163,9 +184,9 @@ connect_to_mqtt()
 
 # Create UI elements for controlling LEDs
 with ui.tabs() as tabs:
-    tab_1 = ui.tab("Controller 1")
-    tab_2 = ui.tab("Controller 2")
-    tab_3 = ui.tab("Controller 3")
+    tab_1 = ui.tab("Controller 1", icon="online_prediction")
+    tab_2 = ui.tab("Controller 2", icon="online_prediction")
+    tab_3 = ui.tab("Controller 3", icon="online_prediction")
 
 with ui.tab_panels(tabs, value=tab_1) as panels:
     with ui.tab_panel(tab_1):
@@ -189,4 +210,10 @@ with ui.tab_panels(tabs, value=tab_1) as panels:
 
 
 # Run the program in window mode
-ui.run(dark=None, title="MQTT LED Controller", reload=True, native=False)
+ui.run(
+    dark=None,
+    title="MQTT LED Controller",
+    reload=True,
+    native=False,
+    favicon="💡",
+)
