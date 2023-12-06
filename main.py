@@ -1,6 +1,7 @@
 import paho.mqtt.client as mqtt
 from nicegui import ui
 import json
+import time
 
 # Define MQTT topics
 topic_main = "lightstrips"
@@ -8,6 +9,7 @@ topic_brodcast_command = topic_main + "/" + "cmd"
 topic_state = topic_main + "/+/" + "sts"
 topic_last_will = topic_main + "/+/" + "last-will"
 topics = [topic_brodcast_command + "/" + str(i) for i in range(12)]
+topics2 = topic_brodcast_command + "/" + "all"
 
 broker_address = "172.17.0.1"
 broker_port = 1883
@@ -19,8 +21,10 @@ class Device:
     def __init__(self, device_id: str, led_count: int):
         self.device_id = device_id
         self._online = False
+        self.led_count = led_count
         self.lights = [str(i) for i in range(led_count)]
         self._online_change_event = None
+        self.retain = True
 
     @property
     def online(self):
@@ -52,6 +56,9 @@ class DeviceManager:
             print(
                 f"Device ID: {device.device_id}, Online: {device.online}, Lights: {device.lights}"
             )
+
+    def get_online_devices(self):
+        return [device for device in self.devices if device.online]
 
 
 class MQTTController:
@@ -112,9 +119,11 @@ class MQTTController:
         ui.connect_button.props("color=negative")
         for i in range(len(ui.led_buttons)):
             ui.led_buttons[i].enabled = True
+        for i in range(len(ui.functions_buttons)):
+            ui.functions_buttons[i].enabled = True
 
     def on_message(self, client, userdata, msg):
-        print("Received message: " + msg.topic + " " + str(msg.payload))
+        # print("Received message: " + msg.topic + " " + str(msg.payload))
         topic_parts = msg.topic.split("/")
         deviceId = topic_parts[1]
         print("Device ID:", deviceId)
@@ -136,6 +145,9 @@ class MQTTController:
         ui.notify("Disconnected from MQTT broker", type="negative")
         for i in range(len(ui.led_buttons)):
             ui.led_buttons[i].enabled = False
+
+        for i in range(len(ui.functions_buttons)):
+            ui.functions_buttons[i].enabled = False
 
     def set_led_button_color(self, led_colors):
         for i, color in enumerate(led_colors):
@@ -163,25 +175,58 @@ class MQTTController:
     def parse_last_will(self, msg_payload):
         if msg_payload.decode() == "offline":
             device.online = False
+            ui.state_label.style("color:red")
+            ui.state_label.text = "offline"
         elif msg_payload.decode() == "online":
             device.online = True
+            ui.state_label.style("color:green")
+            ui.state_label.text = "online"
         else:
             print("last will message not recognized")
 
-    def send_color(self, led_index, color):
-        red, green, blue = int(color[1:3], 16), int(color[3:5], 16), int(color[5:7], 16)
-        payload = {"red": red, "green": green, "blue": blue}
-        topic = topics[led_index]
-        self.client.publish(topic, json.dumps(payload))
+    def send_color(self, device):
+        payload = {"device-id": device.device_id, "lights": {}}
+        for led_index, color in enumerate(device.lights):
+            red, green, blue = (
+                int(color[1:3], 16),
+                int(color[3:5], 16),
+                int(color[5:7], 16),
+            )
+            payload["lights"][str(led_index)] = {
+                "red": red,
+                "green": green,
+                "blue": blue,
+            }
+        self.client.publish(
+            topic_main + "/" + device.device_id + "/cmd",
+            json.dumps(payload),
+            retain=device.retain,
+        )
+
+    def delete_retained_messages(self, device):
+        payload = ""
+        self.client.publish(
+            topic_main + "/" + device.device_id + "/cmd",
+            json.dumps(payload),
+            retain=True,
+        )
+        self.client.publish(
+            topic_main + "/cmd",
+            json.dumps(payload),
+            retain=True,
+        )
 
 
 mqtt_controller = MQTTController(
     broker_address, broker_port, broker_username, broker_password
 )
 
-device = Device(device_id="your_device_id", led_count=12)
+device = Device(device_id="device1", led_count=12)
 mqtt_controller.device_manager.add_device(device)
 mqtt_controller.device_manager.list_devices()
+
+
+ui.colors(primary="#3785b2", secondary="blue")
 
 ui.label("LED Controller UI").style(
     "color: #ffff ; font-size: 400%; font-weight: 700; bold: true;"
@@ -225,6 +270,37 @@ def set_port_value():
     broker_port = int(ui.broker_port_textbox.value)
 
 
+def rotating_led_animation(device, mqtt_controller):
+    colors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#800080", "#00FFFF"]
+    duration = 0.4  # Duration in seconds for each color
+    rotations = 3  # Number of rotations
+
+    for y in range(rotations):
+        for i in range(device.led_count):
+            color = colors[y]
+            device.update_lights(i, color)
+            mqtt_controller.send_color(device)
+            time.sleep(duration)
+        for i in range(device.led_count):
+            color = "#000000"
+            device.update_lights(i, color)
+            mqtt_controller.send_color(device)
+            time.sleep(duration)
+
+    for _ in range(rotations):
+        for i in range(device.led_count):
+            for j in range(device.led_count):
+                device.update_lights(j, "#000000")
+            color = colors[i % len(colors)]
+            device.update_lights(i, color)
+            mqtt_controller.send_color(device)
+            time.sleep(duration)
+
+    for _ in range(device.led_count):
+        device.update_lights(j, "#000000")
+        mqtt_controller.send_color(device)
+
+
 mqtt_controller.connect_to_mqtt()
 
 with ui.tabs() as tabs:
@@ -234,20 +310,74 @@ with ui.tabs() as tabs:
 
 with ui.tab_panels(tabs, value=tab_1) as panels:
     with ui.tab_panel(tab_1):
+        ui.functions_buttons = []
         ui.led_buttons = []
+
+        with ui.row():
+            ui.retain_switch = ui.switch(
+                text="Retain Light State",
+                value=device.retain,
+                on_change=lambda: (
+                    setattr(device, "retain", ui.retain_switch.value),
+                    mqtt_controller.delete_retained_messages(device),
+                ),
+            )
+            ui.state_label = ui.label("offline").style(
+                "right: -210px;top: -10px;position: relative; color:red;"
+            )
+
         with ui.grid(columns=3):
+            with ui.button(
+                text="all Lights off",
+                icon="blur_off",
+                on_click=lambda: (
+                    [
+                        device.update_lights(i, "#000000")
+                        for i in range(device.led_count)
+                    ],
+                    mqtt_controller.send_color(device),
+                ),
+            ).props("stack glossy") as button_all_off:
+                ui.functions_buttons.append(button_all_off)
+
+            with ui.button(icon="palette").props("stack glossy") as button_all:
+                button_all.enabled = False
+                button_all.text = "All Lights"
+                ui.color_picker(
+                    on_pick=lambda e: (
+                        [
+                            device.update_lights(i, e.color)
+                            for i in range(device.led_count)
+                        ],
+                        mqtt_controller.send_color(device),
+                    ),
+                )
+                ui.functions_buttons.append(button_all)
+            with ui.button(
+                text="Animation",
+                icon="animation",
+                on_click=lambda: (
+                    [rotating_led_animation(device, mqtt_controller)],
+                    mqtt_controller.send_color(device),
+                ),
+            ).props("stack glossy") as button_animation:
+                ui.functions_buttons.append(button_animation)
+                button_animation.enabled = False
+
             for i in range(12):
                 button_name = "button" + str(i)
                 with ui.button(icon="lightbulb") as button:
                     button.enabled = False
                     button.name = button_name
-                    button.text = "LED " + str(i)
+                    button.text = "Light " + str(i)
                     color = ui.color_picker(
                         on_pick=lambda e, led_index=i, button=button: (
-                            mqtt_controller.send_color(led_index, e.color),
+                            device.update_lights(led_index, e.color),
+                            mqtt_controller.send_color(device),
                         )
                     )
                     ui.led_buttons.append(button)
+
 
 ui.run(
     dark=None,
