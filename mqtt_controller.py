@@ -118,7 +118,6 @@ class MQTTController:
                 blue = color_data.get("blue", 0)
                 color_hex = "#{:02x}{:02x}{:02x}".format(red, green, blue)
                 self.device_manager.devices[0].update_lights(int(led_index), color_hex)
-                #device.update_lights(int(led_index), color_hex)
                 led_count += 1
         except json.JSONDecodeError:
             print("Invalid JSON message")
@@ -133,10 +132,22 @@ class MQTTController:
             self.device_manager.devices[0].online = False
             ui.state_label.style("color:red")
             ui.state_label.text = "offline"
+            
+            for i in range(len(ui.led_buttons)):
+                ui.led_buttons[i].enabled = False
+            for i in range(len(ui.functions_buttons)):
+                ui.functions_buttons[i].enabled = False            
+            
         elif msg_payload.decode() == "online":
             self.device_manager.devices[0].online = True
             ui.state_label.style("color:green")
             ui.state_label.text = "online"
+            
+            for i in range(len(ui.led_buttons)):
+                ui.led_buttons[i].enabled = True
+            for i in range(len(ui.functions_buttons)):
+                ui.functions_buttons[i].enabled = True            
+            
         else:
             print("last will message not recognized")
 
