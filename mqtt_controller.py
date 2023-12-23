@@ -71,10 +71,6 @@ class MQTTController:
         ui.broker_address_textbox.enabled = False
         ui.broker_port_textbox.enabled = False
         ui.connect_button.props("color=negative")
-        for i in range(len(ui.led_buttons)):
-            ui.led_buttons[i].enabled = True
-        for i in range(len(ui.functions_buttons)):
-            ui.functions_buttons[i].enabled = True
 
     def on_message(self, client, userdata, msg):
         # print("Received message: " + msg.topic + " " + str(msg.payload))
@@ -97,11 +93,7 @@ class MQTTController:
         ui.broker_address_textbox.enabled = True
         ui.connect_button.props("color=positive")
         ui.notify("Disconnected from MQTT broker", type="negative")
-        for i in range(len(ui.led_buttons)):
-            ui.led_buttons[i].enabled = False
 
-        for i in range(len(ui.functions_buttons)):
-            ui.functions_buttons[i].enabled = False
 
     def set_led_button_color(self, led_colors):
         for i, color in enumerate(led_colors):
@@ -133,20 +125,20 @@ class MQTTController:
             ui.state_label.style("color:red")
             ui.state_label.text = "offline"
             
-            for i in range(len(ui.led_buttons)):
-                ui.led_buttons[i].enabled = False
-            for i in range(len(ui.functions_buttons)):
-                ui.functions_buttons[i].enabled = False            
+            # for i in range(len(ui.led_buttons)):
+            #     ui.led_buttons[i].enabled = False
+            # for i in range(len(ui.functions_buttons)):
+            #     ui.functions_buttons[i].enabled = False            
             
         elif msg_payload.decode() == "online":
             self.device_manager.devices[0].online = True
             ui.state_label.style("color:green")
             ui.state_label.text = "online"
             
-            for i in range(len(ui.led_buttons)):
-                ui.led_buttons[i].enabled = True
-            for i in range(len(ui.functions_buttons)):
-                ui.functions_buttons[i].enabled = True            
+            # for i in range(len(ui.led_buttons)):
+            #     ui.led_buttons[i].enabled = True
+            # for i in range(len(ui.functions_buttons)):
+            #     ui.functions_buttons[i].enabled = True            
             
         else:
             print("last will message not recognized")

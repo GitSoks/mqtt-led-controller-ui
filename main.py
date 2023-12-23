@@ -21,7 +21,6 @@ mqtt_controller = MQTTController(
 )
 
 
-
 device_manager= DeviceManager()
 
 device = Device(device_id="device1", led_count=12)
@@ -116,15 +115,36 @@ with ui.tabs() as tabs:
         ui.tab(device.device_id, icon="online_prediction")
         
         
+
+
+
+
     
 
 with ui.tab_panels(tabs, value=device_manager.devices[0].device_id) as panels:
-    for Device in device_manager.devices:                
+    for i, Device in enumerate(device_manager.devices):
+        ui.functions_buttons = []
+        ui.led_buttons = []                
+        
         with ui.tab_panel(Device.device_id):
-            ui.functions_buttons = []
-            ui.led_buttons = []
-
             with ui.row():
+                
+                
+                ui.number(
+                    label='Number of Lights',
+                    value=Device.led_count,
+                    format='%.0f',
+                    placeholder="set to the number of lights on your device",
+                    min=1,
+                    max=255,
+                    step=1,
+                    on_change=lambda e: setattr(Device, 'led_count', e.value)
+                )
+
+                ui.state_label = ui.label("offline").style(
+                    "right: -210px;top: -10px;position: relative; color:red;"
+                )
+
                 with ui.switch(
                     text="Retain Light State",
                     value=device.retain,
@@ -132,13 +152,11 @@ with ui.tab_panels(tabs, value=device_manager.devices[0].device_id) as panels:
                         setattr(device, "retain", retain_switch.value),
                         mqtt_controller.delete_retained_messages(device),
                     ),
+                ).style(
+                    "right: 50px;top: 20px;position: relative; "
                 ) as retain_switch:
                     retain_switch.enabled = False
                     ui.functions_buttons.append(retain_switch)
-
-                ui.state_label = ui.label("offline").style(
-                    "right: -210px;top: -10px;position: relative; color:red;"
-                )
 
             with ui.grid(columns=3):
                 with ui.button(
@@ -194,11 +212,6 @@ with ui.tab_panels(tabs, value=device_manager.devices[0].device_id) as panels:
                         ui.led_buttons.append(button)
 
 
-
-for i in range(len(ui.led_buttons)):
-    ui.led_buttons[i].enabled = False
-for i in range(len(ui.functions_buttons)):
-    ui.functions_buttons[i].enabled = False      
 
 
 
