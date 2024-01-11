@@ -3,7 +3,7 @@ import json
 from nicegui import ui
 import logging
 
-from mqtt_led_controller_ui.device_manager import Device, DeviceManager
+from device_manager import Device, DeviceManager
 
 
 # Define MQTT topics

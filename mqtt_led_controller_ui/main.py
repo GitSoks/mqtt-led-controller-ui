@@ -2,12 +2,12 @@ from nicegui import ui
 import os
 import random
 
-from mqtt_led_controller_ui.mqtt_controller import MQTTController
-from mqtt_led_controller_ui.device_manager import Device
-from mqtt_led_controller_ui.ui_elements import ui_title, ui_connection_control, ui_panels
+from mqtt_controller import MQTTController
+from device_manager import Device
+from ui_elements import ui_title, ui_connection_control, ui_panels
 
 
-from config.settings import broker_address, broker_port, broker_username, broker_password, test_devices
+from settings import broker_address, broker_port, broker_username, broker_password, test_devices
 
 
 import logging

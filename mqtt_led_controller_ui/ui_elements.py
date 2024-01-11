@@ -1,13 +1,11 @@
 import logging
 import asyncio
 import functools
-
-from mqtt_led_controller_ui.mqtt_controller import MQTTController
 from nicegui import ui,events, app
-from mqtt_led_controller_ui.device_manager import Device
 
-
-from config.settings import broker_address, broker_port
+from device_manager import Device
+from mqtt_controller import MQTTController
+from settings import broker_address, broker_port, led_ring_12_image_path
 
 
 app.on_connect(lambda: on_ui_client_connect())
@@ -263,7 +261,7 @@ def ui_panels(mqtt_controller: MQTTController) -> None:
                     with ui.column():
                     
                         with ui.interactive_image(
-                            source = "led_ring.png",
+                            source = led_ring_12_image_path,
                             on_mouse=mouse_handler,
                             events=['mousedown'], 
                         ).classes('w-96 relativ bottom-0 left-4') as image:
