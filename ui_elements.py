@@ -1,9 +1,11 @@
-from mqtt_controller import MQTTController
-from nicegui import ui,events, app
-from device_manager import Device
 import logging
 import asyncio
 import functools
+
+from mqtt_controller import MQTTController
+from nicegui import ui,events, app
+from device_manager import Device
+
 
 from settings import broker_address, broker_port
 

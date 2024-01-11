@@ -3,4 +3,4 @@ broker_port = 1883
 broker_username = "ui"
 broker_password = "password"
 
-test_devices = False
+test_devices = True
