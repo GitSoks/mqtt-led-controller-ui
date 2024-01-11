@@ -5,4 +5,4 @@ broker_password = "password"
 
 test_devices = True
 
-led_ring_12_image_path = "mqtt_led_controller_ui/img/led_ring.png"
+led_ring_12_image_path = "./img/led_ring.png"

@@ -5,10 +5,10 @@ services:
 #      context: .
     volumes:
       - type: bind
-        source: ./config/
+        source: ./mosquitto_mqtt_broker/config/
         target: /mosquitto/config/
       - type: bind
-        source: ./log/
+        source: ./mosquitto_mqtt_broker/log/
         target: /mosquitto/log/
       - type: volume
         source: data
@@ -39,7 +39,7 @@ services:
       - PUID=1000 # change this to your user id
       - PGID=1000 # change this to your group id
     volumes:
-      - ./:/app/
+      - ./mqtt_led_controller_ui:/app # mounting local app directory
     depends_on:
         - mosquitto_mqtt_broker
 
