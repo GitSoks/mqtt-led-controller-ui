@@ -10,7 +10,6 @@ This project is a user interface for controlling LEDs using MQTT (Message Queuin
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Introduction
 
