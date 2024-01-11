@@ -2,6 +2,9 @@
 
 This project is a user interface for controlling LEDs using MQTT (Message Queuing Telemetry Transport) protocol. It allows users to remotely control the state and color of LEDs connected to an MQTT broker.
 
+This project is designed to work with the following ESP-32 LED controller:
+[https://github.com/GitSoks/esp32_led_strip_mqtt_client](https://github.com/GitSoks/esp32_led_strip_mqtt_client)
+
 ## Table of Contents
 
 - [Introduction](#introduction)
@@ -13,7 +16,9 @@ This project is a user interface for controlling LEDs using MQTT (Message Queuin
 
 ## Introduction
 
-The MQTT LED Controller UI is a web-based application built with HTML, CSS, and JavaScript. It provides a user-friendly interface for controlling LEDs connected to an MQTT broker. The application communicates with the MQTT broker using the MQTT.js library.
+The MQTT LED Controller UI is a web-based application built with Python. It provides a user-friendly interface for controlling LEDs connected to an MQTT broker.
+
+<img src="img/gui_readme_showcase.png" alt="GUI Readme Showcase" height="500">
 
 ## Features
 
@@ -25,30 +30,60 @@ The MQTT LED Controller UI is a web-based application built with HTML, CSS, and 
 
 ## Installation
 
+
+### Option 1: Using Docker with an included MQTT Broker 
+( skip this step if you want the use the GUI in a local python environment )
+
 1. Clone the repository:
 
     ```bash
     git clone https://github.com/your-username/mqtt-led-controller-ui.git
     ```
 
-2. Install the required dependencies:
+
+2. install docke on you machine
+
+3. compose up the docker compose file (docker-compose.yaml):
 
     ```bash
-    cd mqtt-led-controller-ui
-    npm install
-    ```
-
-
-3. Start the application:
-
-    ```bash
-    npm start
+    docker-compose up
     ```
 
 4. Open the application in your web browser:
 
     ```
-    http://localhost:3000
+    http://localhost:8080
+    ```
+
+### Option 2: Using a local python environment with a custom MQTT broker
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/your-username/mqtt-led-controller-ui.git
+    ```
+
+
+2. install python (>= 3.10)
+
+
+3. Install all python dependencies
+
+    ```python
+    pip install -r requirements.txt
+    ```
+
+
+4. Start the application:
+
+    ```python
+    python mqtt_led_controller_ui/main.py
+    ```
+
+5. Open the application in your web browser:
+
+    ```
+    http://localhost:8080
     ```
 
 ## Usage
@@ -67,7 +102,7 @@ The MQTT LED Controller UI is a web-based application built with HTML, CSS, and 
 
 ## Configuration
 
-The MQTT LED Controller UI can be configured by modifying the `config.js` file. This file contains the following settings:
+The MQTT LED Controller UI can be configured by modifying the `settings.py` file. This file contains the following settings:
 
 - `mqttBrokerUrl`: The URL of the MQTT broker.
 - `mqttUsername`: The username for connecting to the MQTT broker (optional).
@@ -75,6 +110,3 @@ The MQTT LED Controller UI can be configured by modifying the `config.js` file. 
 - `ledStateTopic`: The MQTT topic for subscribing to LED state updates.
 - `ledColorTopic`: The MQTT topic for subscribing to LED color updates.
 - `ledControlTopic`: The MQTT topic for publishing LED control messages.
-
-
-
