@@ -46,7 +46,7 @@ The MQTT LED Controller UI is a web-based application built with Python. It prov
 3. compose up the docker compose file (docker-compose.yaml):
 
     ```bash
-    docker-compose up
+    docker compose up
     ```
 
 4. Open the application in your web browser:
