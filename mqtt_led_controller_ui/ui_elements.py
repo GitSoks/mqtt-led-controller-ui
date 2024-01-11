@@ -2,12 +2,12 @@ import logging
 import asyncio
 import functools
 
-from mqtt_controller import MQTTController
+from mqtt_led_controller_ui.mqtt_controller import MQTTController
 from nicegui import ui,events, app
-from device_manager import Device
+from mqtt_led_controller_ui.device_manager import Device
 
 
-from settings import broker_address, broker_port
+from config.settings import broker_address, broker_port
 
 
 app.on_connect(lambda: on_ui_client_connect())
