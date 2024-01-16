@@ -9,6 +9,7 @@ This project is designed to work with the following ESP-32 LED controller:
 
 ## Table of Contents
 
+* [Overview](#overview)
 * [Introduction](#introduction)
 * [Features](#features)
 * [Installation](#installation)
