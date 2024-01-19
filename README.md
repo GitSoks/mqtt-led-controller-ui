@@ -9,20 +9,22 @@ This project is designed to work with the following ESP-32 LED controller:
 
 ## Table of Contents
 
-* [Overview](#overview)
-* [Introduction](#introduction)
-* [Features](#features)
-* [Porject Structure](#porject-structure)
-* [Dependencies](#dependencies)
-* [Installation](#installation)
-  * [Option 1: Using Docker with an included MQTT Broker](#option-1-using-docker-with-an-included-mqtt-broker)
-  * [Option 2: Using a local python environment with a custom MQTT broker](#option-2-using-a-local-python-environment-with-a-custom-mqtt-broker)
-* [Usage](#usage)
-* [Configuration](#configuration)
-* [Acknowledgments and Resources](#acknowledgments-and-resources)
-* [Sources for used media](#sources-for-used-media)
-* [Contact](#contact)
-* [License](#license)
+- [MQTT LED Controller GUI](#mqtt-led-controller-gui)
+  - [Overview](#overview)
+  - [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Features](#features)
+  - [Data Flow Diagram](#data-flow-diagram)
+  - [Getting Started](#getting-started)
+    - [Dependencies](#dependencies)
+    - [Installation](#installation)
+      - [Option 1: Using Docker with an included MQTT Broker](#option-1-using-docker-with-an-included-mqtt-broker)
+      - [Option 2: Using a local python environment with a custom MQTT broker](#option-2-using-a-local-python-environment-with-a-custom-mqtt-broker)
+    - [Configuration](#configuration)
+    - [Usage](#usage)
+  - [Acknowledgments and Resources](#acknowledgments-and-resources)
+  - [Sources for used media](#sources-for-used-media)
+  - [Contact](#contact)
 
 ## Introduction
 
@@ -46,7 +48,65 @@ The MQTT LED Controller UI is a web-based application built with Python. It prov
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Porject Structure
+
+## Data Flow Diagram
+
+The following diagram shows an example of how the MQTT LED Controller UI can be used to control LEDs connected to an MQTT broker.
+Its also shows how the MQTT LED Controller UI can be used to control multiple devices and users and how the UI updates dynamically based on MQTT messages.
+
+```mermaid
+graph LR;
+   
+    gui[["MQTT LED Controller GUI 
+    (Docker Container)"]] -. mqtt: LED cmd .-> 
+    broker[["MQTT Broker 
+    (Mosquitto Docker Container)"]];
+
+    broker -- mqtt: LED cmd---> esp1["ESP-32 LED Controller"];
+
+    subgraph Device 2
+    esp2  ==> led2[/WS2812B LED Strip/]
+    end
+    
+    subgraph Device 1
+    esp1  ==> led1[/WS2812B LED Strip/]
+    end
+
+    esp1 -- mqtt: LED stat --> broker;
+
+    broker -- mqtt: LED cmd---> esp2["ESP-32 LED Controller"];
+
+   
+    esp2 -- mqtt: LED stat --> broker;
+ 
+
+
+    subgraph "Server (docker compose up)"
+    broker -. mqtt: LED stat .-> gui;
+    end
+
+    user1["User 1
+    (Webbrowser)"] <-- http--> gui;
+
+
+    user2["User 2
+    (Webbrowser)"] <-- http--> gui;
+
+
+    style broker fill:#275edd ,stroke:#333,stroke-width:4px
+    style user1  stroke:orange,stroke-width:4px
+    style user2  stroke:orange,stroke-width:4px
+    style gui fill:#4627dd ,stroke:#333,stroke-width:4px
+
+```
+
+
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+<!-- ## Porject Structure
 
 ```
 mqtt_led_controller_ui
@@ -75,9 +135,14 @@ mqtt_led_controller_ui
 │  └─ ui_elements.py
 ├─ readme.md
 └─ requirements.txt
-```
 
-## Dependencies
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+``` -->
+
+## Getting Started
+
+### Dependencies
 
 Have a look at the [requirements.txt](requirements.txt) file for all dependencies.
 
@@ -90,9 +155,9 @@ You may also need to install to install docker and docker-compose on your machin
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Installation
+### Installation
 
-### Option 1: Using Docker with an included MQTT Broker
+#### Option 1: Using Docker with an included MQTT Broker
 
 ( skip this step if you want the use the GUI in a local python environment )
 
@@ -116,7 +181,7 @@ You may also need to install to install docker and docker-compose on your machin
     http://localhost:8080
     ```
 
-### Option 2: Using a local python environment with a custom MQTT broker
+#### Option 2: Using a local python environment with a custom MQTT broker
 
 1. Clone the repository:
 
@@ -146,7 +211,21 @@ You may also need to install to install docker and docker-compose on your machin
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Usage
+### Configuration
+
+The MQTT LED Controller UI can be configured by modifying the [settings.py](mqtt_led_controller_ui/settings.py) file. This file contains the following settings:
+
+* `mqttBrokerUrl`: The URL of the MQTT broker.
+* `mqttUsername`: The username for connecting to the MQTT broker (optional).
+* `mqttPassword`: The password for connecting to the MQTT broker (optional).
+* `ledStateTopic`: The MQTT topic for subscribing to LED state updates.
+* `ledColorTopic`: The MQTT topic for subscribing to LED color updates.
+* `ledControlTopic`: The MQTT topic for publishing LED control messages.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+### Usage
 
 1. Launch the application in your web browser.
 
@@ -162,18 +241,6 @@ You may also need to install to install docker and docker-compose on your machin
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Configuration
-
-The MQTT LED Controller UI can be configured by modifying the [settings.py](mqtt_led_controller_ui/settings.py) file. This file contains the following settings:
-
-* `mqttBrokerUrl`: The URL of the MQTT broker.
-* `mqttUsername`: The username for connecting to the MQTT broker (optional).
-* `mqttPassword`: The password for connecting to the MQTT broker (optional).
-* `ledStateTopic`: The MQTT topic for subscribing to LED state updates.
-* `ledColorTopic`: The MQTT topic for subscribing to LED color updates.
-* `ledControlTopic`: The MQTT topic for publishing LED control messages.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Acknowledgments and Resources
 
@@ -198,8 +265,9 @@ Project Link: [https://github.com/GitSoks/mqtt-led-controller-ui](https://github
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!--
 ## License
 
 To be determined.
 
-<!-- Distributed under the MIT License. See `LICENSE` for more information. -->
+ Distributed under the MIT License. See `LICENSE` for more information. -->
