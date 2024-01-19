@@ -1,3 +1,4 @@
+
 # MQTT LED Controller GUI
 
 ## Overview
@@ -30,7 +31,7 @@ This project is designed to work with the following ESP-32 LED controller:
 
 The MQTT LED Controller UI is a web-based application built with Python. It provides a user-friendly interface for controlling LEDs connected to an MQTT broker.
 
-<img src="media/gui_readme_showcase.png" alt="menuconfig" width="70%">
+<img src="media/gui_readme_showcase.png" alt="menuconfig" width="55%">
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -52,7 +53,7 @@ The MQTT LED Controller UI is a web-based application built with Python. It prov
 ## Data Flow Diagram
 
 The following diagram shows an example of how the MQTT LED Controller UI can be used to control LEDs connected to an MQTT broker.
-Its also shows how the MQTT LED Controller UI can be used to control multiple devices and users and how the UI updates dynamically based on MQTT messages.
+It also shows how the MQTT LED Controller UI can be used to control multiple devices and users, and how the UI updates dynamically based on MQTT messages.
 
 ```mermaid
 graph LR;
@@ -106,7 +107,7 @@ graph LR;
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-<!-- ## Porject Structure
+<!-- ## Project Structure
 
 ```
 mqtt_led_controller_ui
@@ -144,14 +145,14 @@ mqtt_led_controller_ui
 
 ### Dependencies
 
-Have a look at the [requirements.txt](requirements.txt) file for all dependencies.
+Take a look at the [requirements.txt](requirements.txt) file for all dependencies.
 
 The following third party Python packages are used in this project:
 
 * [NiceGui](https://nicegui.io/) - A Python library for building web-based GUIs.
 * [Paho MQTT](https://pypi.org/project/paho-mqtt/) - A Python MQTT client library.
 
-You may also need to install to install docker and docker-compose on your machine to run the docker-compose.yaml file and the included MQTT broker.
+You may also need to install docker and docker-compose on your machine to run the docker-compose.yaml file and the included MQTT broker.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -159,7 +160,7 @@ You may also need to install to install docker and docker-compose on your machin
 
 #### Option 1: Using Docker with an included MQTT Broker
 
-( skip this step if you want the use the GUI in a local python environment )
+(skip this step if you want to use the GUI in a local python environment)
 
 1. Clone the repository:
 
@@ -167,7 +168,7 @@ You may also need to install to install docker and docker-compose on your machin
     git clone https://github.com/your-username/mqtt-led-controller-ui.git
     ```
 
-2. install docker on you machine
+2. install docker on your machine
 
 3. compose up the docker compose file (docker-compose.yaml):
 
@@ -259,7 +260,7 @@ Here are some resources that I found helpful while working on this project:
 
 ## Contact
 
-David - [GitSoks on Github](Github.com/GitSoks)
+David - [GitSoks on GitHub](Github.com/GitSoks)
 
 Project Link: [https://github.com/GitSoks/mqtt-led-controller-ui](https://github.com/GitSoks/mqtt-led-controller-ui)
 
@@ -271,3 +272,4 @@ Project Link: [https://github.com/GitSoks/mqtt-led-controller-ui](https://github
 To be determined.
 
  Distributed under the MIT License. See `LICENSE` for more information. -->
+
