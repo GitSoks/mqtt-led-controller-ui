@@ -31,24 +31,32 @@ This project is designed to work with the following ESP-32 LED controller:
 
 The MQTT LED Controller UI is a web-based application built with Python. It provides a user-friendly interface for controlling LEDs connected to an MQTT broker.
 
-<img src="media/gui_readme_showcase.png" alt="menuconfig" width="55%">
+<div style="display:flex">
+
+<td style="padding:10px">
+    <img src="media/gui_readme_showcase.png" alt="menuconfig" height="800px">
+</td>
+
+<td style="padding:10px">
+ <video src="media/showcase_video.mp4" controls title="Showcase example video"  height="800px"></video>
+</td>
+
+</div>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Features
 
-* Connect to an MQTT broker and subscribe to LED control topics.
-* Display the current state and color of the LEDs.
-* Allow users to toggle the state of the LEDs (on/off).
-* Allow users to change the color of the LEDs using a color picker.
-* Publish MQTT messages to control the LEDs.
-* Automatic and dynamic UI updates based on MQTT messages and connected devices.
-* List connected devices and allow users to select a device to control.
-* Option to Dockerize the application with an included MQTT broker.
-
+- Connect to an MQTT broker and subscribe to LED control topics.
+- Display the current state and color of the LEDs.
+- Allow users to toggle the state of the LEDs (on/off).
+- Allow users to change the color of the LEDs using a color picker.
+- Publish MQTT messages to control the LEDs.
+- Automatic and dynamic UI updates based on MQTT messages and connected devices.
+- List connected devices and allow users to select a device to control.
+- Option to Dockerize the application with an included MQTT broker.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 ## Data Flow Diagram
 
@@ -101,11 +109,7 @@ graph LR;
 
 ```
 
-
-
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 <!-- ## Project Structure
 
@@ -149,8 +153,8 @@ Take a look at the [requirements.txt](requirements.txt) file for all dependencie
 
 The following third party Python packages are used in this project:
 
-* [NiceGui](https://nicegui.io/) - A Python library for building web-based GUIs.
-* [Paho MQTT](https://pypi.org/project/paho-mqtt/) - A Python MQTT client library.
+- [NiceGui](https://nicegui.io/) - A Python library for building web-based GUIs.
+- [Paho MQTT](https://pypi.org/project/paho-mqtt/) - A Python MQTT client library.
 
 You may also need to install docker and docker-compose on your machine to run the docker-compose.yaml file and the included MQTT broker.
 
@@ -216,15 +220,14 @@ You may also need to install docker and docker-compose on your machine to run th
 
 The MQTT LED Controller UI can be configured by modifying the [settings.py](mqtt_led_controller_ui/settings.py) file. This file contains the following settings:
 
-* `mqttBrokerUrl`: The URL of the MQTT broker.
-* `mqttUsername`: The username for connecting to the MQTT broker (optional).
-* `mqttPassword`: The password for connecting to the MQTT broker (optional).
-* `ledStateTopic`: The MQTT topic for subscribing to LED state updates.
-* `ledColorTopic`: The MQTT topic for subscribing to LED color updates.
-* `ledControlTopic`: The MQTT topic for publishing LED control messages.
+- `mqttBrokerUrl`: The URL of the MQTT broker.
+- `mqttUsername`: The username for connecting to the MQTT broker (optional).
+- `mqttPassword`: The password for connecting to the MQTT broker (optional).
+- `ledStateTopic`: The MQTT topic for subscribing to LED state updates.
+- `ledColorTopic`: The MQTT topic for subscribing to LED color updates.
+- `ledControlTopic`: The MQTT topic for publishing LED control messages.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 ### Usage
 
@@ -242,21 +245,22 @@ The MQTT LED Controller UI can be configured by modifying the [settings.py](mqtt
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 ## Acknowledgments and Resources
 
 Here are some resources that I found helpful while working on this project:
 
-* [NiceGui](https://nicegui.io/) - A Python library for building web-based GUIs.
-* [MQTT Explorer](http://mqtt-explorer.com/) - A useful tool for exploring MQTT brokers.
-* [MQTT Essentials](https://www.hivemq.com/mqtt-essentials/) - A great introduction to MQTT.
-* [Paho MQTT](https://pypi.org/project/paho-mqtt/) - A Python MQTT client library.
+- [NiceGui](https://nicegui.io/) - A Python library for building web-based GUIs.
+- [Mosquitto](https://mosquitto.org/) - An open source MQTT broker.
+- [MQTT Explorer](http://mqtt-explorer.com/) - A useful tool for exploring MQTT brokers.
+- [MQTT Essentials](https://www.hivemq.com/mqtt-essentials/) - A great introduction to MQTT.
+- [Paho MQTT](https://pypi.org/project/paho-mqtt/) - A Python MQTT client library.
+- [docker-compose](https://docs.docker.com/compose/) - A tool for defining and running multi-container Docker applications.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Sources for used media
 
-* [led_ring.png](media/led_ring.png): [https://www.az-delivery.de](https://www.az-delivery.de/cdn/shop/products/led-ring-5v-rgb-ws2812b-12-bit-50mm-942438.jpg?v=1679398919&width=1200)
+- [led_ring.png](media/led_ring.png): [https://www.az-delivery.de](https://www.az-delivery.de/cdn/shop/products/led-ring-5v-rgb-ws2812b-12-bit-50mm-942438.jpg?v=1679398919&width=1200)
 
 ## Contact
 
@@ -272,4 +276,3 @@ Project Link: [https://github.com/GitSoks/mqtt-led-controller-ui](https://github
 To be determined.
 
  Distributed under the MIT License. See `LICENSE` for more information. -->
-
