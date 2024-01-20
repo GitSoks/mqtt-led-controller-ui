@@ -31,9 +31,7 @@ This project is designed to work with the following ESP-32 LED controller:
 
 The MQTT LED Controller UI is a web-based application built with Python. It provides a user-friendly interface for controlling LEDs connected to an MQTT broker.
 
-
-<img src="media/gui_readme_showcase.png" alt="menuconfig" height="600px"> | <video src="media/showcase_video.mp4" height="600px"></video>
-
+<img src="media/gui_readme_showcase.png" alt="menuconfig" height="600px">
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -48,9 +46,7 @@ The MQTT LED Controller UI is a web-based application built with Python. It prov
 - List connected devices and allow users to select a device to control.
 - Option to Dockerize the application with an included MQTT broker.
 
-
-
-
+<video src="https://github.com/GitSoks/mqtt-led-controller-ui/assets/35436218/551b1d1a-86d2-4726-afba-7704e5913a83" height="600px"></video>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
