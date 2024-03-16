@@ -1,8 +1,24 @@
+# docker-compose.yml
+# docker-compose file to run the mqtt broker and the web interface for the led controller
+# the mqtt broker is running in a container and the web interface is running in another container
+# the containers are connected to a network to communicate with each other
+# the web interface is built from the Dockerfile in the current directory
+# the web interface is mounted to the container to allow for live changes to the code
+
+# to run the containers use the command: docker-compose up
+# to stop the containers use the command: docker-compose down
+
+# create a network for the containers to communicate with each other
+networks: 
+  mqtt-network:
+    name: "mqtt-network"
+    driver: bridge
+
+
 services:
-  mosquitto_mqtt_broker:
+  mosquitto_mqtt_broker: # container for the mqtt broker
+    container_name: mqtt_broker
     image: eclipse-mosquitto:2
-#    build:
-#      context: .
     volumes:
       - type: bind
         source: ./mosquitto_mqtt_broker/config/
@@ -16,7 +32,8 @@ services:
     expose:
       - 1883
     restart: unless-stopped
-    network_mode: bridge
+    networks: # connect the container to the created network
+      mqtt-network:
     ports:
       - target: 1883
         published: 1883
@@ -26,23 +43,34 @@ services:
         published: 9001
         protocol: tcp
         mode: bridge
-
-  led_controller_ui:
+  
+  led_controller_ui: # container for the web interface
+    container_name: led_controller_ui
     build:
       context: .  
     #image: zauberzeug/nicegui:latest
     #restart: always
-    network_mode: host
+    networks: # connect the container to the created network
+      mqtt-network:
     ports:
-      - 80:8080
+      - target: 8080
+        published: 8080
+        protocol: tcp
+        mode: bridge
+    expose:
+      - 8080
     environment:
-      - PUID=1000 # change this to your user id
-      - PGID=1000 # change this to your group id
+      - PUID=1000
+      - PGID=1000
     volumes:
       - ./mqtt_led_controller_ui:/app # mounting local app directory
-    depends_on:
+    depends_on: # make sure the mqtt broker is running before starting the web interface
         - mosquitto_mqtt_broker
 
+# valumes for the mosquitto container to store data
+# the mqtt broker is using a volume to store data
+# the mqtt broker is using a bind mount to store the configuration and log files
 volumes:
   data:
     name: "mqtt-broker-data"
+
