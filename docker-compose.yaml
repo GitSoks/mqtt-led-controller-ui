@@ -53,12 +53,12 @@ services:
     networks: # connect the container to the created network
       mqtt-network:
     ports:
-      - target: 8080
-        published: 8080
+      - target: 80
+        published: 80
         protocol: tcp
         mode: bridge
     expose:
-      - 8080
+      - 80
     environment:
       - PUID=1000
       - PGID=1000

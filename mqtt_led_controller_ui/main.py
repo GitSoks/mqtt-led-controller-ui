@@ -43,16 +43,15 @@ def main():
     )
 
     mqtt_controller.connect_to_mqtt()
-    
+
     if test_devices:
         mqtt_controller.device_manager.add_device(device_test_1)
         mqtt_controller.device_manager.add_device(device_test_2)
         mqtt_controller.device_manager.add_device(device_test_3)
-        
+
     for device in mqtt_controller.device_manager.devices:
         device.online = False
-        
-    
+
     mqtt_controller.device_manager.list_devices()
 
     ui.colors(primary="#3785b2", secondary="blue")
@@ -71,6 +70,7 @@ def main():
         title="MQTT LED Controller",
         reload=True,
         native=False,
+        port=80,
         favicon="💡",
     )
 
