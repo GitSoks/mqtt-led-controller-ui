@@ -23,6 +23,7 @@ This project is designed to work with the following ESP-32 LED controller:
       - [Option 2: Using a local python environment with a custom MQTT broker](#option-2-using-a-local-python-environment-with-a-custom-mqtt-broker)
     - [Configuration](#configuration)
     - [Usage](#usage)
+  - [Software Architecture](#software-architecture)
   - [Acknowledgments and Resources](#acknowledgments-and-resources)
   - [Sources for used media](#sources-for-used-media)
   - [Contact](#contact)
@@ -236,6 +237,25 @@ The MQTT LED Controller UI can be configured by modifying the [settings.py](mqtt
 6. The application will publish MQTT messages to control the LEDs based on user actions.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Software Architecture
+```mermaid
+flowchart LR
+    A[("main.py")] == Initializes and orchestrates ==> B[("device_manager.py")] & C[("mqtt_controller.py")] & D[("ui_elements.py")]
+    B -- Defines --> E["DeviceManager"]
+    C -- Defines --> F["MQTTController"]
+    D -- Defines --> G["UI Elements"]
+    E -. Manages .-> H{{"Device"}}
+    F -. Handles .-> I{{"MQTT Client"}}
+    G -. Creates and manages .-> J{{"User Interface"}}
+     A:::main
+     B:::main
+     C:::main
+     D:::main
+     E:::sub
+     F:::sub
+     G:::sub
+```
 
 ## Acknowledgments and Resources
 

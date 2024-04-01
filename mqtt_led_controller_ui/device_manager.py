@@ -24,14 +24,13 @@ class Device:
     @property
     def online(self):
         return self._online
-    
+
     @property
     def online_str(self):
         if (self._online):
             return "online"
         else:
             return "offline"
-    
 
     @online.setter
     def online(self, status: bool):
@@ -45,7 +44,6 @@ class Device:
             self.lights[index] = color
         except IndexError:
             logging.info("Index out of range")
-
 
     def set_online_change_event(self, event):
         self._online_change_event = event

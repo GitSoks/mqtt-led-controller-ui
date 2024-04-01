@@ -1,12 +1,11 @@
-import paho.mqtt.client as mqtt
 import json
-from nicegui import ui
 import logging
+import time
 
+import paho.mqtt.client as mqtt
 from device_manager import Device, DeviceManager
+from nicegui import ui
 
-
-# Define MQTT topics
 topic_main = "lightstrips"
 topic_broadcast_command = topic_main + "/" + "cmd"
 topic_state = topic_main + "/+/" + "sts"
@@ -33,7 +32,6 @@ class MQTTController:
     @property
     def mqtt_connected(self):
         return self.client.is_connected()
-
 
     def connect_to_mqtt(self):
         self.client.username_pw_set(self.broker_username, self.broker_password)
@@ -65,16 +63,11 @@ class MQTTController:
         logging.info("Connected to MQTT broker with result code " + str(rc))
         client.subscribe(topic_last_will)
         client.subscribe(topic_state)
-        
+
         ui.status_label.text = "Connected to MQTT broker " + self.broker_address
         ui.broker_address_textbox.enabled = False
         ui.broker_port_textbox.enabled = False
         ui.connect_button.props("color=negative")
-
-        
-
-
-
 
     def _on_message(self, client, userdata, msg):
         # logging.info("Received message: " + msg.topic + " " + str(msg.payload))
@@ -87,49 +80,44 @@ class MQTTController:
             if _device_id == _device.device_id:
                 break
         else:
-            logging.info(f'New device found - adding {_device_id} to device manager')
+            logging.info(f"New device found - adding {_device_id} to device manager")
             self.device_manager.add_device(Device(_device_id))
             _device_number = len(self.device_manager.devices) - 1
             _device = self.device_manager.devices[_device_number]
-
-
 
         if _topic_parts[2] == "sts":
             self.parse_json_message(msg.payload, _device)
         elif _topic_parts[2] == "last-will":
             self.parse_last_will(msg.payload, _device)
 
-
     def _on_publish(self, client, userdata, mid):
         logging.info("Message published")
 
     def _on_disconnect(self, client, userdata, rc):
         logging.info("Disconnected from MQTT broker")
-        
+
         ui.status_label.text = "Disconnected from MQTT broker"
-        
+
         ui.broker_port_textbox.enabled = True
         ui.broker_address_textbox.enabled = True
-        
+
         for device in self.device_manager.devices:
             device.online = False
-        
+
         ui.connect_button.props("color=positive")
         ui.notify("Disconnected from MQTT broker", type="negative")
-        
-        
 
     def parse_json_message(self, json_message, device: Device):
         led_count = 0
         try:
             data = json.loads(json_message)
             lights = data.get("lights", {})
-            
+
             for led_index, color_data in lights.items():
                 led_count += 1
-            
+
             device.led_count = led_count    
-            
+
             for led_index, color_data in lights.items():
                 red = color_data.get("red", 0)
                 green = color_data.get("green", 0)
@@ -142,11 +130,9 @@ class MQTTController:
                     logging.debug("Index out of range")
                 except KeyError:
                     logging.debug("Key not found")
-                
+
         except json.JSONDecodeError:
             logging.info("Invalid JSON message")
-
-
 
         logging.info(f'LED lights: {device.lights}')
         logging.info(f'LED count: {device.led_count}')
@@ -161,7 +147,7 @@ class MQTTController:
 
         else:
             logging.info("the last message is not recognized")
-            
+
         logging.info(f'Online: {_device.online}')
 
     def send_color(self, device):
@@ -195,3 +181,23 @@ class MQTTController:
             json.dumps(payload),
             retain=True,
         )
+
+    def test_performance(self, device):
+
+        # Start the performance timer
+        start_time = time.time()
+
+
+
+        # Send the color message
+        self.send_color(device)
+
+        # Wait for the device to change its light status
+        while device.lights != device.target_lights:
+            pass
+
+        # Calculate the elapsed time
+        elapsed_time = time.time() - start_time
+
+        # Print the elapsed time
+        print(f"Elapsed time: {elapsed_time} seconds")
