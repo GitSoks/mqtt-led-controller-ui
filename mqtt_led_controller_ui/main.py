@@ -11,7 +11,6 @@ from settings import (
     BROKER_PORT,
     BROKER_USERNAME,
 )
-
 from ui_elements import ui_connection_control, ui_panels, ui_title
 
 if ADD_DUMMY_TEST_DEVICES:

@@ -16,6 +16,7 @@ This project is designed to work with the following ESP-32 LED controller:
   - [Introduction](#introduction)
   - [Features](#features)
   - [Data Flow Diagram](#data-flow-diagram)
+  - [Device Communication](#device-communication)
   - [Getting Started](#getting-started)
     - [Dependencies](#dependencies)
     - [Installation](#installation)
@@ -53,7 +54,14 @@ The MQTT LED Controller UI is a web-based application built with Python. It prov
 
 ## Data Flow Diagram
 
-The following diagram shows an example of how the MQTT LED Controller UI can be used to control LEDs connected to an MQTT broker.
+The following diagrams show an example of how the MQTT LED Controller UI can be used to control LEDs connected to an MQTT broker.
+
+
+
+![media/data_flow_concept.png](media/data_flow_concept.png)
+
+## Device Communication
+The MQTT LED Controller UI communicates with the ESP-32 LED controllers using MQTT messages. The ESP-32 LED controllers subscribe to the LED control topic and publish LED state updates to the MQTT broker. The MQTT LED Controller UI subscribes to the LED state topic and publishes LED control messages to the MQTT broker. The following diagram illustrates the communication flow between the MQTT LED Controller UI, the MQTT broker, and the ESP-32 LED controllers.
 It also shows how the MQTT LED Controller UI can be used to control multiple devices and users, and how the UI updates dynamically based on MQTT messages.
 
 ```mermaid
