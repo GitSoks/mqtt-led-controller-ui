@@ -24,7 +24,7 @@ def ui_title() -> None:
             "color: #5395bb ;  font-size: 500%; font-weight: 900; bold: true;  "
         ).props("text-uppercase")
 
-        ui.label("made by David Sokolowski").style(
+        ui.label("made by GitSoks on Github ").style(
             "color: grey; font-size: 100%; font-weight: 0; bold: false; position: relative; bottom: 30px;right: 0px;"
         )
 
